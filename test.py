@@ -1,14 +1,26 @@
 import smtplib
 import getpass
+import os
 
-#///////
-#import mimetypes
-#from email.mime.image import MIMEImage
-#////////
-#fileToSend = "volcano.jpg"
-#img = ("volcano.jpg")
-#####
-#find a function to add the @
+from email.mime.multipart import MIMEMultipart
+import mimetypes
+
+from email.mime.text import MIMEText
+from email import encoders
+
+
+from argparse import ArgumentParser
+
+
+from email.mime.image import MIMEImage
+
+
+from email.mime.base import MIMEBase
+
+
+
+
+
 
 try:
   server = smtplib.SMTP('smtp.gmail.com', 587)
@@ -19,54 +31,39 @@ except:
 # make connection secure
 server.starttls()
 
+
 myemail = raw_input("What's your email? ")
 print("Email " + myemail)
 
 mypwd = getpass.getpass('Enter your password: ')  
 
-#myemail = input("abiblarz@csumb.edu")
 
-#recip = input("abiblarz@csumb.edu")
 recip = raw_input("Please enter the email you want to send. ")
 print("email " + recip)
-#need to find the attachment for the image
 
-#/volcano.jpg
 
 server.login(myemail, mypwd)
 
-msg = ('git hub site: https://github.com/diegocsumb42/project3')
-msg = raw_input("Enter your message:  ")
-'''
-####
-ctype, encoding = mimetypes.guess_type(fileToSend)
-if ctype is None or encoding is not None:
-    ctype = "application/octet-stream"
 
-maintype, subtype = ctype.split("/", 1)
+message = raw_input("Enter your message:  ")
 
-if maintype == "image":
-    fp = open(fileToSend, "rb")
-    attachment = MIMEImage(fp.read(), _subtype=subtype)
-    fp.close()
-    
+subject = raw_input("Enter the subject: ")
 
-fp = open('volcano.jpg', 'rb')
-msgImage = MIMEImage(fp.read())
-fp.close()
-'''
-#######
+print("please enter the image you want to send.")
+
+choose = raw_input("      ")
+
+msg = MIMEMultipart()
+ImageFile = open(choose, 'rb').read()
+image = MIMEImage(ImageFile, name = os.path.basename(choose)) 
+msg.attach(image)
+msg['Subject'] = subject
+text = MIMEText(message)
+msg.attach(text)
 
 
-#print msg.as_string()
-
-#print(img)
-
-print("message " + msg)
 
 
-# naelshiab.com/tutorial-send-email-python/
 
-
-server.sendmail(myemail, recip, msg)
+server.sendmail(myemail, recip, msg.as_string())
 server.quit()
